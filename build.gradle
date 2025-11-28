@@ -1,0 +1,115 @@
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.8' apply false
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+jar {
+    enabled = false
+}
+allprojects {
+    group = 'org.limbusnoe'
+    version = '1.0.0'
+
+    repositories {
+        mavenCentral()
+    }
+}
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = '21'
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        implementation 'org.projectlombok:lombok:1.18.38'
+        annotationProcessor 'org.projectlombok:lombok:1.18.38'
+    }
+    bootBuildImage {
+        imageName = "${project.name}:${version}"
+        environment = [
+                "BPE_DELIM_JAVA_TOOL_OPTIONS" : " ",
+                "BPE_APPEND_JAVA_TOOL_OPTIONS" : "-Dspring.profiles.active=docker",
+                "BP_JVM_VERSION" : "21"
+        ]
+        publish = false
+        cleanCache = true
+        verboseLogging = true
+    }
+    bootJar {
+        archiveFileName = "${project.name}-${version}.jar"
+    }
+    jar {
+        enabled = false
+    }
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+}
+
+tasks.register('cleanAll') {
+    group = 'build'
+    description = 'Cleans all projects'
+    dependsOn subprojects.clean
+    dependsOn clean
+}
+
+tasks.register('buildRelease') {
+    group = 'build'
+    description = 'Builds complete release with JARs and Docker images'
+
+    doFirst {
+        def timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        println "🚀 Starting release build v${version}"
+        println "📅 Build time: $timestamp"
+        println "📦 Services to build:"
+        subprojects.each { project ->
+            println "   • ${project.name} (${project.projectDir.name})"
+        }
+        println "=" * 50
+    }
+
+    dependsOn subprojects.build
+    dependsOn subprojects.bootBuildImage
+
+    doLast {
+        println "=" * 50
+        println "✅ RELEASE BUILD COMPLETED v${version}"
+        println "📊 Build results:"
+
+        subprojects.each { project ->
+            def jarFile = project.tasks.bootJar.outputs.files.singleFile
+            def jarSize = String.format("%.2f", jarFile.length() / 1024 / 1024.0)
+            println "   • ${project.name.padRight(25)} ${jarSize} MB"
+        }
+
+        println "\n🐳 Docker images:"
+        subprojects.each { project ->
+            println "   • ${project.name}:${project.version}"
+        }
+
+        println "\n🌐 Endpoints:"
+        println "   • Eureka Dashboard: http://localhost:8761"
+        println "   • API Gateway:      http://localhost:8080"
+        println "   • Test Service:     http://localhost:8081"
+        println "   • Another Test:     http://localhost:8082"
+    }
+}
+
+tasks.register('cleanBuildRelease') {
+    group = 'build'
+    description = 'Clean and build complete release'
+    dependsOn cleanAll
+    dependsOn buildRelease
+}

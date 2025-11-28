@@ -1,0 +1,19 @@
+dependencies {
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+}
+bootBuildImage {
+    imageName = "service-registry:${version}"
+    environment = [
+            "BPE_DELIM_JAVA_TOOL_OPTIONS": " ",
+            "BPE_APPEND_JAVA_TOOL_OPTIONS": """
+            -Dserver.port=8761 
+            -Dspring.profiles.active=docker 
+            -Deureka.instance.hostname=service-registry
+        """.stripIndent().trim()
+    ]
+}
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.2"
+    }
+}
