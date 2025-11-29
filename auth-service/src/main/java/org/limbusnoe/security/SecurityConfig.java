@@ -1,6 +1,7 @@
 package org.limbusnoe.security;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,8 +21,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Bean
-    public JwtRequestFilter jwtRequestFilter(JwtComponent jwtComponent) {
-        return new JwtRequestFilter(jwtComponent);
+    public JwtRequestFilter jwtRequestFilter(JwtComponent jwtComponent, Logger logger) {
+        return new JwtRequestFilter(jwtComponent, logger);
     }
 
     @Bean
