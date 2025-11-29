@@ -7,14 +7,14 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: test-service
-          uri: lb://test-service
+        - id: auth-service
+          uri: lb://auth-service
           predicates:
-            - Path=/api/test/**
-        - id: another-test-service
-          uri: lb://another-test-service
+            - Path=/api/auth/**
+        - id: course-service
+          uri: lb://course-service
           predicates:
-            - Path=/api/another-test/**
+            - Path=/api/course-service/**
 
 eureka:
   client:

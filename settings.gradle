@@ -8,6 +8,6 @@
 rootProject.name = 'hackandchange'
 include 'api-gateway'
 include 'service-registry'
-include 'test-service'
-include 'another-test-service'
+include 'auth-service'
+include 'course-service'
 

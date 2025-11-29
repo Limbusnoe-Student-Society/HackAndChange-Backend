@@ -69,42 +69,8 @@ tasks.register('buildRelease') {
     group = 'build'
     description = 'Builds complete release with JARs and Docker images'
 
-    doFirst {
-        def timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-        println "🚀 Starting release build v${version}"
-        println "📅 Build time: $timestamp"
-        println "📦 Services to build:"
-        subprojects.each { project ->
-            println "   • ${project.name} (${project.projectDir.name})"
-        }
-        println "=" * 50
-    }
-
     dependsOn subprojects.build
     dependsOn subprojects.bootBuildImage
-
-    doLast {
-        println "=" * 50
-        println "✅ RELEASE BUILD COMPLETED v${version}"
-        println "📊 Build results:"
-
-        subprojects.each { project ->
-            def jarFile = project.tasks.bootJar.outputs.files.singleFile
-            def jarSize = String.format("%.2f", jarFile.length() / 1024 / 1024.0)
-            println "   • ${project.name.padRight(25)} ${jarSize} MB"
-        }
-
-        println "\n🐳 Docker images:"
-        subprojects.each { project ->
-            println "   • ${project.name}:${project.version}"
-        }
-
-        println "\n🌐 Endpoints:"
-        println "   • Eureka Dashboard: http://localhost:8761"
-        println "   • API Gateway:      http://localhost:8080"
-        println "   • Test Service:     http://localhost:8081"
-        println "   • Another Test:     http://localhost:8082"
-    }
 }
 
 tasks.register('cleanBuildRelease') {
