@@ -44,7 +44,7 @@ subprojects {
                 "BP_JVM_VERSION" : "21"
         ]
         publish = false
-        cleanCache = true
+        cleanCache = false
         verboseLogging = true
     }
     bootJar {

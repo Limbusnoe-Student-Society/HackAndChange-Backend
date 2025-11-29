@@ -6,11 +6,11 @@ spring:
     name: course-service
   datasource:
     url: jdbc:postgresql://localhost:5432/course_db
-    username: ${SPRING_DATASOURCE_USERNAME:kitoglav}
-    password: ${SPRING_DATASOURCE_PASSWORD:admin}
+    username: ${DB_USERNAME:kitoglav}
+    password: ${DB_PASSWORD:admin}
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
   kafka:
     bootstrap-servers: localhost:9092

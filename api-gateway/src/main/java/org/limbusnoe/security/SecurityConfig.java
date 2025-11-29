@@ -1,7 +1,6 @@
 package org.limbusnoe.security;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,8 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Bean
-    public JwtRequestFilter jwtRequestFilter(JwtComponent jwtComponent) {
-        return new JwtRequestFilter(jwtComponent);
+    public JwtRequestFilter jwtRequestFilter(AuthServiceClient authService) {
+        return new JwtRequestFilter(authService);
     }
 
     @Bean
@@ -30,8 +29,7 @@ public class SecurityConfig {
         http
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/auth/login", "api/auth/register").anonymous()
-                        .requestMatchers("/api/auth/logout").authenticated()
+                        .requestMatchers("/login", "/register").anonymous()
                         .anyRequest().permitAll()
                 )
                 .exceptionHandling(configurer -> configurer.accessDeniedHandler((request, response, accessDeniedException) -> response.sendRedirect("/")))

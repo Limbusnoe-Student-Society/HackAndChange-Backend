@@ -5,41 +5,35 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.limbusnoe.data.TokenValidationResponse;
 import lombok.RequiredArgsConstructor;
-import org.limbusnoe.jpa.models.User;
-import org.limbusnoe.service.AuthService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
-    private final JwtComponent jwtComponent;
-    private static final Logger logger = LoggerFactory.getLogger(JwtRequestFilter.class);
+    private final AuthServiceClient authService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain chain) throws ServletException, IOException {
         String token = getTokenFromRequest(request);
-        User user;
-        try {
-            user = jwtComponent.getByToken(token);
-            if (user != null) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        if (token != null) {
+            TokenValidationResponse data = authService.validateToken(token);
+            if(data.isValid()) {
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(data.getUsername(), null, data.getRoles().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet()));
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        }catch (UsernameNotFoundException usernameNotFoundException) {
-            logger.info("warning");
         }
         chain.doFilter(request, response);
     }
