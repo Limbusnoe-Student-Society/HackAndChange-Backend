@@ -9,8 +9,8 @@
 * Java 21
 * Spring Boot / Spring Cloud (Eureka, Gateway, Feign)
 * PostgreSQL
-* Kafka
 * Docker & Docker Compose
+* HTML CSS JS
 
 ### ⭐ Основные возможности
 
@@ -39,29 +39,25 @@ DB_USERNAME=app_user
 DB_PASSWORD=admin
 SECURITY_JWT_SECRET=change-me
 SECURITY_JWT_EXPIRATION=3600000
+S3_KEY=key
+S3_SECRET=secret
+S3_REGION=ru-central1
+S3_ENDPOINT=https://storage.yandexcloud.net
+S3_BUCKET=bucket
 ```
 
-2. **Запустить инфраструктуру (Postgres + Kafka)**
+2. **Запустить инфраструктуру**
 
 ```bash
-docker compose up -d postgres kafka
-```
-
-3. **Запуск сервисов локально**
-
-```bash
-./gradlew :service-registry:bootRun
-./gradlew :api-gateway:bootRun
-./gradlew :auth-service:bootRun
-./gradlew :course-service:bootRun
+docker compose -p hackandchange-backend up -d
 ```
 
 ### 🔃 Запуск через Docker
 
-1. Собрать образы:
+1. Собрать jar и образы:
 
 ```bash
-./gradlew bootBuildImage
+./gradlew buildRelease
 ```
 
 2. Поднять весь стек:
@@ -77,7 +73,6 @@ docker compose up --build
 **Почему наш подход лучше:**
 
 * Микросервисы легко расширить
-* Kafka обеспечивает устойчивость и асинхронность
 * Простая контейнеризация
 * Подходит для масштабирования и командной разработки
 
@@ -92,28 +87,23 @@ docker compose up --build
 ### Json-структура для добавления курсов
 ```json
 {
-  "courseId": id,
   "title": title,
   "description": description,
   "modules": [
     {
-      "moduleId": id,
       "title": title,
       "order": 1,
       "lessons": [
         {
-          "lessonId": 1,
           "title": title,
           "order": 1,
           "pages": [
             {
-              "pageId": 1,
               "type": "TEXT", // или "VIDEO", "QUIZ"
               "title": title,
               "content": contentText,
               "videoUrl": null, 
               "order": 1,
-              "completed": false
             }
           ]
         }
