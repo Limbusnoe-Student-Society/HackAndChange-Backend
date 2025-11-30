@@ -1,0 +1,18 @@
+CREATE DATABASE auth_db;
+CREATE DATABASE course_db;
+CREATE DATABASE homework_db;
+CREATE DATABASE journal_db;
+CREATE DATABASE communication_db;
+
+ALTER DATABASE auth_db OWNER TO ${DB_USERNAME:-app_user};
+
+ALTER DATABASE course_db OWNER TO ${DB_USERNAME:-app_user};
+ALTER DATABASE homework_db OWNER TO ${DB_USERNAME:-app_user};
+ALTER DATABASE journal_db OWNER TO ${DB_USERNAME:-app_user};
+ALTER DATABASE communication_db OWNER TO ${DB_USERNAME:-app_user};
+
+GRANT ALL PRIVILEGES ON DATABASE auth_db TO ${DB_USERNAME:-app_user};
+GRANT ALL PRIVILEGES ON DATABASE course_db TO ${DB_USERNAME:-app_user};
+GRANT ALL PRIVILEGES ON DATABASE homework_db TO ${DB_USERNAME:-app_user};
+GRANT ALL PRIVILEGES ON DATABASE journal_db TO ${DB_USERNAME:-app_user};
+GRANT ALL PRIVILEGES ON DATABASE communication_db TO ${DB_USERNAME:-app_user};

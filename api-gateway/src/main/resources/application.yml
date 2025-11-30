@@ -4,17 +4,37 @@ server:
 spring:
   application:
     name: api-gateway
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+  mvc:
+    static-path-pattern: /static/**
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
   cloud:
     gateway:
-      routes:
-        - id: test-service
-          uri: lb://test-service
-          predicates:
-            - Path=/api/test/**
-        - id: another-test-service
-          uri: lb://another-test-service
-          predicates:
-            - Path=/api/another-test/**
+      mvc:
+        routes:
+          - id: auth-service
+            uri: lb://auth-service
+            predicates:
+              - Path=/api/auth/**
+          - id: course-service
+            uri: lb://course-service
+            predicates:
+              - Path=/api/course/**
+          - id: student-interactions-service
+            uri: lb://student-interactions-service
+            predicates:
+              - Path=/api/student-interactions/**
+          - id: yandex-cloud-service
+            uri: lb://yandex-cloud-service
+            predicates:
+              - Path=/api/cloud/**
 
 eureka:
   client:

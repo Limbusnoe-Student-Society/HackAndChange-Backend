@@ -1,0 +1,20 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: student-interactions-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/student_interactions_db
+    username: ${DB_USERNAME:kitoglav}
+    password: ${DB_PASSWORD:admin}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: student-interactions-service
