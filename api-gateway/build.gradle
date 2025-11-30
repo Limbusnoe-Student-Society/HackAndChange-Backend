@@ -12,7 +12,7 @@ bootBuildImage {
             "BPE_DELIM_JAVA_TOOL_OPTIONS": " ",
             "BPE_APPEND_JAVA_TOOL_OPTIONS": """
             -Dserver.port=8080 
-            -Dspring.profiles.active=docker 
+            -Dspring.profiles.active=docker
             -Deureka.client.service-url.defaultZone=http://service-registry:8761/eureka/
         """.stripIndent().trim()
     ]

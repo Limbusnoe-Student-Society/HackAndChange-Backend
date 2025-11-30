@@ -14,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "course-modules")
+@Table(name = "course_modules")
 public class CourseModule {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -1,4 +1,4 @@
-package org.limbusnoe.security;
+package org.limbusnoe.service;
 
 import org.limbusnoe.data.TokenValidationResponse;
 import org.springframework.cloud.openfeign.FeignClient;

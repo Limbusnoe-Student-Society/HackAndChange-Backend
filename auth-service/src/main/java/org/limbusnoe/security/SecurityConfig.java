@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/auth/login", "api/auth/register").anonymous()
-                        .requestMatchers("/api/auth/logout").authenticated()
+                        .requestMatchers("/api/auth/logout", "api/auth/user").authenticated()
                         .anyRequest().permitAll()
                 )
                 .exceptionHandling(configurer -> configurer.accessDeniedHandler((request, response, accessDeniedException) -> response.sendRedirect("/")))

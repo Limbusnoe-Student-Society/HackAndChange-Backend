@@ -12,16 +12,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: auth-group
-      auto-offset-reset: earliest
-      properties:
-        spring.json.trusted.packages: "*"
-        spring.json.use.type.headers: false
-
-
 eureka:
   client:
     service-url:

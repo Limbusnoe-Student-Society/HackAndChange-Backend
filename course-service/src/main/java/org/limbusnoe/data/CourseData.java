@@ -3,9 +3,7 @@ package org.limbusnoe.data;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.annotation.Nullable;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -33,7 +31,6 @@ public class CourseData {
         private String pageType;
         private String title;
         private String content;
-        @Nullable
         private String videoUrl;
         private int order;
     }

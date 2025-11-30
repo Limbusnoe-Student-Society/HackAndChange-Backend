@@ -4,15 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.id.uuid.UuidGenerator;
 
 import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "course-pages")
+@Table(name = "course_pages")
 public class CoursePage {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -35,6 +33,10 @@ public class CoursePage {
     @JoinColumn(name = "lesson_id")
     @JsonIgnore
     private CourseLesson lesson;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "quiz_id", referencedColumnName = "quiz_id")
+    @JsonIgnore
+    private CourseQuiz quiz;
 
     public enum PageType {
         TEXT,

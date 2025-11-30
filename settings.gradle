@@ -10,4 +10,6 @@ include 'api-gateway'
 include 'service-registry'
 include 'auth-service'
 include 'course-service'
+include 'student-interactions-service'
+include 'yandex-cloud-service'
 

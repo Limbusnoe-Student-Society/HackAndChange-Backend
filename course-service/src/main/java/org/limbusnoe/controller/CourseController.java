@@ -6,7 +6,8 @@ import org.limbusnoe.jpa.models.Course;
 import org.limbusnoe.jpa.models.CourseLesson;
 import org.limbusnoe.jpa.models.CourseModule;
 import org.limbusnoe.jpa.models.CoursePage;
-import org.limbusnoe.jpa.repository.CourseRepository;
+import org.limbusnoe.security.StudentInteractionsService;
+import org.limbusnoe.service.CourseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,22 +19,33 @@ import java.util.UUID;
 @RequestMapping("/api/course")
 @RequiredArgsConstructor
 public class CourseController {
-    private final CourseRepository courseRepository;
+    private final CourseService courseService;
+    private final StudentInteractionsService studentInteractionsService;
 
     @GetMapping("courses")
     private Collection<Course> getCourses() {
-        return courseRepository.findAll();
+        return courseService.findAllCourses();
     }
 
-    @PostMapping("course/{id}")
+    @PutMapping("course/{id}")
     private void addCourse(@RequestBody CourseData data, @PathVariable UUID id) {
-        if (courseRepository.existsById(id)) {
+        if (courseService.isCourseExist(id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Курс с таким ID уже существует");
         } else {
             Course courseObj = parseCourse(data);
             courseObj.setId(id);
-            courseRepository.save(courseObj);
+            courseService.save(courseObj);
         }
+    }
+
+    @GetMapping("course/{id}")
+    private Course getCourse(@PathVariable UUID id) {
+        return courseService.getCourse(id);
+    }
+
+    @GetMapping("/has-access-for-page/{page}/{student}")
+    private boolean hasAccessForPage(@PathVariable UUID page, @PathVariable Long student) {
+        return studentInteractionsService.isAssigned(courseService.getCourseIdByPageId(page), student);
     }
 
     public Course parseCourse(CourseData course) {

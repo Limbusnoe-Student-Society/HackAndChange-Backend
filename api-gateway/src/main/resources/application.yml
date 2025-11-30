@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: api-gateway
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
   mvc:
     static-path-pattern: /static/**
   thymeleaf:
@@ -22,6 +27,14 @@ spring:
             uri: lb://course-service
             predicates:
               - Path=/api/course/**
+          - id: student-interactions-service
+            uri: lb://student-interactions-service
+            predicates:
+              - Path=/api/student-interactions/**
+          - id: yandex-cloud-service
+            uri: lb://yandex-cloud-service
+            predicates:
+              - Path=/api/cloud/**
 
 eureka:
   client:
