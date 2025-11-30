@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -36,7 +37,7 @@ public class User implements UserDetails {
     @Column(length = 64)
     private String patronymic;
     @Column(nullable = false)
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

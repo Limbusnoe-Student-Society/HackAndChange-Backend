@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
@@ -50,7 +49,7 @@ public class StudentInteractionsService {
 
     public void enrichWithDetails(CourseAssignment assignment) {
         CompletableFuture<Map<String, Object>> student = CompletableFuture.supplyAsync(() -> authService.getUserById(assignment.getStudentId()));
-        CompletableFuture<Map<String, Object>> course = CompletableFuture.supplyAsync(() -> courseService.getCourseById(assignment.getCourseId()));
+        CompletableFuture<Map<String, Object>> course = CompletableFuture.supplyAsync(() -> (Map<String, Object>) courseService.getCourseById(assignment.getCourseId()));
         try {
             CompletableFuture.allOf(student, course).get(5000L, TimeUnit.MILLISECONDS);
             Map<String,Object> studentPars = student.join();
@@ -71,18 +70,19 @@ public class StudentInteractionsService {
             throw new RuntimeException(e);
         }
     }
+
     @Transactional
-    public void assignStudent(UUID course, Long student) {
-        if(courseAssignmentRepository.existsByStudentIdAndCourseId(student, course)) {
+    public void assignStudent(UUID course, Long id) {
+        if (courseAssignmentRepository.existsByStudentIdAndCourseId(id, course)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Студент уже назначен на этот курс");
         }
         CourseAssignment assignment = new CourseAssignment();
         assignment.setCourseId(course);
-        assignment.setStudentId(student);
+        assignment.setStudentId(id);
         assignment.setAssignTime(Timestamp.from(Instant.now()));
         courseAssignmentRepository.save(assignment);
     }
-
+    @Transactional
     public void completePage(UUID page, Long student) {
         if(pageCompletionRepository.existsByStudentIdAndPageId(student, page)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Студент уже прочитал эту страницу");

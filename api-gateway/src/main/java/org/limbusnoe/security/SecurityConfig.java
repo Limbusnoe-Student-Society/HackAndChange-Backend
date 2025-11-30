@@ -31,10 +31,12 @@ public class SecurityConfig {
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/login", "/register").anonymous()
+                        .requestMatchers("/logout").authenticated()
                         .anyRequest().permitAll()
                 )
                 .exceptionHandling(configurer -> configurer.accessDeniedHandler((request, response, accessDeniedException) -> response.sendRedirect("/")))
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .logout(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }

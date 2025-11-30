@@ -31,6 +31,5 @@ public class CourseModule {
 
     @OneToMany(mappedBy = "module", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("ordering ASC")
-    @JsonIgnore
     private List<CourseLesson> lessons = new ArrayList<>();
 }
