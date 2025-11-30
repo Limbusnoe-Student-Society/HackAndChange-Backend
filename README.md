@@ -88,6 +88,42 @@ docker compose up --build
 * Мониторинг (Prometheus + Grafana)
 * Централизованные логи (ELK)
 
+
+### Json-структура для добавления курсов
+```json
+{
+  "courseId": id,
+  "title": title,
+  "description": description,
+  "modules": [
+    {
+      "moduleId": id,
+      "title": title,
+      "order": 1,
+      "lessons": [
+        {
+          "lessonId": 1,
+          "title": title,
+          "order": 1,
+          "pages": [
+            {
+              "pageId": 1,
+              "type": "TEXT", // или "VIDEO", "QUIZ"
+              "title": title,
+              "content": contentText,
+              "videoUrl": null, 
+              "order": 1,
+              "completed": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+
 ### ⁉️ Фидбек / Issues
 
 Если нашли баг или хотите предложить улучшение - создайте issue в репозитории. Описывайте проблему кратко и по существу, добавляйте шаги воспроизведения и логи при необходимости.
