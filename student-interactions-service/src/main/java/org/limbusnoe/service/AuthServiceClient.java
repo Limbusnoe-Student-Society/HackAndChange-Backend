@@ -17,4 +17,6 @@ public interface AuthServiceClient {
 
     @GetMapping("/user/{id}")
     Map<String, Object> getUserById(@PathVariable Long id);
+    @GetMapping("/user/")
+    Long getIdByUsername(String student);
 }

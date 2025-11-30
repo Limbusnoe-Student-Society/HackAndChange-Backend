@@ -30,6 +30,5 @@ public class CourseLesson {
     private CourseModule module;
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("ordering ASC")
-    @JsonIgnore
     private List<CoursePage> pages = new ArrayList<>();
 }

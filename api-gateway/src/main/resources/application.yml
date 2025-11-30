@@ -1,6 +1,5 @@
 server:
   port: 8080
-
 spring:
   application:
     name: api-gateway
@@ -35,6 +34,8 @@ spring:
             uri: lb://yandex-cloud-service
             predicates:
               - Path=/api/cloud/**
+        form-filter:
+          enabled: false
 
 eureka:
   client:

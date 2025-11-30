@@ -2,6 +2,7 @@ package org.limbusnoe.service;
 
 import lombok.RequiredArgsConstructor;
 import org.limbusnoe.jpa.models.Course;
+import org.limbusnoe.jpa.models.CoursePage;
 import org.limbusnoe.jpa.repository.CourseRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -35,5 +37,9 @@ public class CourseService {
     @Transactional
     public Course save(Course course) {
         return courseRepository.save(course);
+    }
+
+    public List<CoursePage> getAllPages(UUID courseId) {
+        return courseRepository.findAllByCourseIdOrdered(courseId);
     }
 }

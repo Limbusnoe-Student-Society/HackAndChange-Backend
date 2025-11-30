@@ -1,7 +1,9 @@
 package org.limbusnoe.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.limbusnoe.data.TokenValidationResponse;
 import org.limbusnoe.jpa.models.CourseAssignment;
+import org.limbusnoe.service.AuthServiceClient;
 import org.limbusnoe.service.StudentInteractionsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +16,17 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StudentInteractionsController {
     private final StudentInteractionsService service;
-    
-    @PostMapping("assign-course/{course}/{student}")
-    private void assignCourse(@PathVariable UUID course, @PathVariable Long student) {
-        service.assignStudent(course, student);
+    private final AuthServiceClient authService;
+    @PostMapping("assign-course/{course}")
+    private void assignCourse(@PathVariable UUID course, @CookieValue(name = "jwt") String token) {
+        System.out.println(token);
+        if(token != null) {
+            TokenValidationResponse tokenValidationResponse = authService.validateToken(token);
+            if(tokenValidationResponse.isValid()) {
+                Long id = authService.getIdByUsername(tokenValidationResponse.getUsername());
+                service.assignStudent(course, id);
+            }
+        }
     }
     @GetMapping("is-assigned/{course}/{student}")
     private boolean isAssigned(@PathVariable UUID course, @PathVariable Long student) {
@@ -27,10 +36,17 @@ public class StudentInteractionsController {
     private boolean isPageRead(@PathVariable UUID page, @PathVariable Long student) {
         return service.isCompleted(student, page);
     }
-    @PostMapping("complete-page/{page}/{student}")
-    private void completeCourse(@PathVariable UUID page, @PathVariable Long student) {
-        if(service.isAssigned(student, page)) {
-            service.completePage(page, student);
+
+    @PostMapping("complete-page/{page}")
+    private void completeCourse(@PathVariable UUID page, @CookieValue(name = "jwt") String token) {
+        if (token != null) {
+            TokenValidationResponse tokenValidationResponse = authService.validateToken(token);
+            if (tokenValidationResponse.isValid()) {
+                Long id = authService.getIdByUsername(tokenValidationResponse.getUsername());
+                if (service.isAssigned(id, page)) {
+                    service.completePage(page, id);
+                }
+            }
         }
     }
     @GetMapping("get-active-courses/{student}")
