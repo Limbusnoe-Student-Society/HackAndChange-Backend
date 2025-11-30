@@ -23,7 +23,7 @@
   --muted-light: #64748b;
   --input-bg-light: rgba(255, 255, 255, 0.6);
 
-  --accent: #3b82f6;
+  --accent: #1a5fb4;
   --accent-hover: #2563eb;
   --radius: 12px;
   --shadow-sm: 0 3px 15px rgba(0,0,0,0.15);
@@ -231,19 +231,13 @@ body.light .link { color: var(--muted-light); }
 <body>
 
 
-<input type="checkbox" id="themeToggle" th:checked="${theme == 'light'}">
-<label class="theme-switch" for="themeToggle">
-  <span class="sun">🌞</span>
-  <span class="moon">🌙</span>
-</label>
-
 
 <div class="auth">
   <h2>Создание аккаунта</h2>
 
   <div th:if="${error}" class="error-message" th:text="${error}"></div>
 
-  <form th:action="@{/api/auth/register}" method="post">
+  <form th:action="@{/register}" method="post">
     <div>
       <label>Имя</label>
       <input type="text" name="name" placeholder="Введите имя" required>
@@ -258,7 +252,7 @@ body.light .link { color: var(--muted-light); }
     </div>
     <div>
       <label>Дата рождения</label>
-      <input type="date" name="birthDate" required>
+      <input type="date" min="1970-01-01" max="2025-01-01" name="birthDate" required>
     </div>
     <div class="full">
       <label>Эл. почта</label>

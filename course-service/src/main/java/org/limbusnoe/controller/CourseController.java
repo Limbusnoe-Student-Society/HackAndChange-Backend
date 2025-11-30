@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -41,6 +42,10 @@ public class CourseController {
     @GetMapping("course/{id}")
     private Course getCourse(@PathVariable UUID id) {
         return courseService.getCourse(id);
+    }
+    @GetMapping("all-pages/{id}")
+    private List<CoursePage> getAllPages(@PathVariable UUID id) {
+        return courseService.getAllPages(id);
     }
 
     @GetMapping("/has-access-for-page/{page}/{student}")

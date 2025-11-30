@@ -53,10 +53,17 @@ public class AuthService {
         return roleRepository.findRolesByUsersUsername(username);
     }
 
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     @Transactional
     public CookieData addUser(RegisterDto register) {
         if (userRepository.existsByUsername(register.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Пользователь с именем {%s} уже существует".formatted(register.getUsername()));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Никнейм уже занят");
+        }
+        if(userRepository.existsByEmail(register.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Почта уже занята");
         }
         if (!register.getPassword().equals(register.getPasswordConfirm())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Повторный пароль введён неверно");

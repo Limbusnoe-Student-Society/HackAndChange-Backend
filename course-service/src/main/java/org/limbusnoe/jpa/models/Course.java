@@ -25,6 +25,5 @@ public class Course {
     private String description;
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("ordering ASC")
-    @JsonIgnore
     private List<CourseModule> modules = new ArrayList<>();
 }

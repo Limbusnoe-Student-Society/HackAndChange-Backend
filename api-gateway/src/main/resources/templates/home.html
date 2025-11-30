@@ -1,10 +1,513 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Курсы "Лимбусное"</title>
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab:300,400|Roboto:300,400,700">
+    <style>
+        :root {
+            --primary-dark: #0a0a14;
+            --secondary-dark: #121225;
+            --accent-blue: #1a5fb4;
+            --accent-light-blue: #3584e4;
+            --text-light: #f5f5f7;
+            --text-gray: #a1a1a6;
+            --border-dark: #2a2a3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background-color: var(--secondary-dark) !important;
+            border-bottom: 1px solid var(--border-dark);
+            padding: 10px 0;
+        }
+
+        .navbar-brand {
+            color: var(--accent-light-blue) !important;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--text-light) !important;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .navbar-toggler {
+            border: 1px solid var(--border-dark);
+        }
+        .navbar-nav .nav-link:hover,
+        .dropdown-item:hover {
+            background-color: var(--secondary-dark);
+            color: var(--accent-light-blue) !important;
+        }
+
+        .dropdown-menu {
+            background-color: var(--primary-dark);
+            border: 1px solid var(--border-dark);
+        }
+
+        .dropdown-item {
+            color: var(--text-light);
+        }
+
+        /* Buttons */
+        .btn-outline-custom {
+            border: 1px solid var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .btn-primary-custom {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+        }
+
+        .btn-outline-custom:hover,
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Avatar */
+        .avatar-nav {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-blue);
+            transition: all 0.3s;
+        }
+
+        .avatar-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(26, 95, 180, 0.3);
+        }
+
+        /* Hero Section */
+        .hero-3 {
+            background: linear-gradient(135deg, var(--secondary-dark) 0%, var(--primary-dark) 100%);
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-3::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(26, 95, 180, 0.2) 0%, transparent 70%);
+        }
+
+        .hero__content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .hero__content .title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            font-family: 'Roboto Slab', serif;
+            color: var(--text-light);
+        }
+
+        .hero__content .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            color: var(--text-gray);
+        }
+
+        /* Features */
+        .features {
+            padding: 60px 0;
+            background-color: var(--secondary-dark);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .info-card {
+            background-color: var(--primary-dark);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            text-align: center;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-card h3 {
+            color: var(--accent-light-blue);
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        /* Courses */
+        .courses-section {
+            padding: 60px 0;
+            background-color: var(--primary-dark);
+        }
+
+        .section-header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            font-family: 'Roboto Slab', serif;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .course-hero {
+            position: relative;
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .course-hero:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .course-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.7));
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2rem;
+            color: white;
+        }
+
+        .course-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .course-category {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .course-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            font-family: 'Roboto Slab', serif;
+        }
+
+        .course-description {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .course-btn {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .course-hero:hover .course-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .course-btn:hover {
+            background-color: var(--accent-light-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(26, 95, 180, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-dark);
+            border-top: 1px solid var(--border-dark);
+            padding: 40px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-column h3 {
+            color: var(--accent-light-blue);
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-light-blue);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-dark);
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .hero__content .title {
+                font-size: 2.5rem;
+            }
+
+            .hero__content .subtitle {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">Курсы "Лимбусное"</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="chatDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Чат с преподавателями
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="chatDropdown">
+                        <li><a class="dropdown-item" href="#">Профессор Иванов</a></li>
+                        <li><a class="dropdown-item" href="#">Профессор Петров</a></li>
+                        <li><a class="dropdown-item" href="#">Профессор Сидоров</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Моё обучение</a>
+                </li>
+            </ul>
+
+            <div class="d-flex align-items-center">
+                <!-- Show login/registration only for NON-authenticated users -->
+                <div sec:authorize="!isAuthenticated()">
+                    <a class="btn btn-outline-custom me-2" th:href="@{/login}">Войти</a>
+                    <a class="btn btn-primary-custom me-3" th:href="@{/register}">Регистрация</a>
+                </div>
+
+                <!-- Show avatar and logout only for authenticated users -->
+                <div sec:authorize="isAuthenticated()" class="d-flex align-items-center">
+                    <a th:href="@{/home}">
+                        <img src="/assets/img/avatar-placeholder.jpg"
+                             alt="Аватар" class="avatar-nav me-2">
+                    </a>
+                    <a href="/" onclick="logout(); return false;" class="btn btn-outline-custom">Выйти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-3">
+    <div class="container">
+        <div class="hero__content">
+            <h1 class="title">Курсы "Лимбусное"</h1>
+            <p class="subtitle">Образовательная платформа нового поколения</p>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="features">
+    <div class="container">
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>Качественное обучение</h3>
+                <p>Профессиональные курсы от ведущих преподавателей</p>
+            </div>
+            <div class="info-card">
+                <h3>Практические навыки</h3>
+                <p>Применяйте знания в реальных проектах</p>
+            </div>
+            <div class="info-card">
+                <h3>Поддержка 24/7</h3>
+                <p>Помощь преподавателей в любое время</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Courses Section -->
+<section class="courses-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Наши курсы</h2>
+            <p class="section-subtitle">Выберите подходящий курс и начните свой путь в мире программирования и дизайна</p>
+        </div>
+        <div class="row gy-4 row-cols-1 row-cols-md-2 row-cols-xl-3">
+            <div class="col" th:each="course : ${courses}">
+                <div class="course-hero">
+                    <div class="course-overlay">
+                        <div class="course-content">
+                            <h3 class="course-title" th:text="${course.title}">Название курса</h3>
+                            <p class="course-description" th:text="${course.description}">Описание курса</p>
+                            <a th:href="@{/course/{id}(id=${course.id})}" class="course-btn">Подробнее о курсе</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>О Лимбусное</h3>
+                <ul class="footer-links">
+                    <li><a href="#">О нас</a></li>
+                    <li><a href="#">Вакансии</a></li>
+                    <li><a href="#">Партнеры</a></li>
+                    <li><a href="#">Пресса</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Курсы</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Все курсы</a></li>
+                    <li><a href="#">Бесплатные курсы</a></li>
+                    <li><a href="#">Сертификаты</a></li>
+                    <li><a href="#">Для организаций</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Поддержка</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Справочный центр</a></li>
+                    <li><a href="#">Сообщество</a></li>
+                    <li><a href="#">Контакты</a></li>
+                    <li><a href="#">Политика конфиденциальности</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Соцсети</h3>
+                <ul class="footer-links">
+                    <li><a href="#">VK</a></li>
+                    <li><a href="#">Telegram</a></li>
+                    <li><a href="#">YouTube</a></li>
+                    <li><a href="#">GitHub</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            © 2025 Лимбусное. Все права защищены.
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function logout() {
+        fetch('/logout', {
+            method: 'POST'
+        })
+            .then(response => {
+                if (response.ok) {
+                    location.reload()
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        return false;
+    }
+</script>
 </body>
+
 </html>
